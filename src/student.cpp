@@ -71,21 +71,99 @@ string display(Stack& s) {
 
 // SOAL 1
 bool push(Stack& s, int nilai) {
-    return false;
+    Node *baru = new Node;
+
+    baru->data = nilai;
+    baru->next = s.top;
+
+    s.top = baru;
+
+    return true;
 }
 
 // SOAL 2
 bool pop(Stack& s, int& nilai) {
-    return false;
+    // Jika stack kosong, gagal
+    // dan nilai TIDAK boleh diubah
+    if (s.top == nullptr)
+    {
+        return false;
+    }
+
+    // Simpan node paling atas
+    Node *hapus = s.top;
+
+    // Ambil nilai sebelum node dihapus
+    nilai = hapus->data;
+
+    // Geser top ke node berikutnya
+    s.top = hapus->next;
+
+    // Hapus node lama dari memory
+    delete hapus;
+
+    return true;
 }
 
 // SOAL 3
 void clear(Stack& s) {
+    while (s.top != nullptr)
+    {
+        Node *hapus = s.top;
+
+        // Simpan node berikutnya sebelum delete
+        s.top = hapus->next;
+
+        delete hapus;
+    }
 }
 
 // SOAL 4
 bool kurungSeimbang(const string& ekspresi) {
-    return false;
+    Stack s;
+    inisialisasi(s);
+
+    for (char c : ekspresi)
+    {
+
+        // Jika kurung buka, masukkan ke stack
+        if (c == '(' || c == '[' || c == '{')
+        {
+            push(s, static_cast<int>(c));
+        }
+
+        // Jika kurung tutup
+        else if (c == ')' || c == ']' || c == '}')
+        {
+
+            int atas;
+
+            // Tidak ada pasangan pembuka
+            if (!pop(s, atas))
+            {
+                clear(s);
+                return false;
+            }
+
+            // Pastikan jenis kurung cocok
+            if ((c == ')' && atas != '(') ||
+                (c == ']' && atas != '[') ||
+                (c == '}' && atas != '{'))
+            {
+
+                clear(s);
+                return false;
+            }
+        }
+    }
+
+    // Seimbang jika tidak ada kurung buka yang tersisa
+    bool hasil = isEmpty(s);
+
+    // Bersihkan stack sebelum fungsi selesai
+    clear(s);
+
+    return hasil;
 }
 
 // =============================================================================
